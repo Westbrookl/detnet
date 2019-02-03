@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<GCC_XML cvs_revision="1.127">
+  <Namespace id="_1" name="::" members="_3 _4 _5 _6 _2 " mangled="_Z2::" demangled="::"/>
+  <Namespace id="_2" name="std" context="_1" members="" mangled="_Z3std" demangled="std"/>
+  <Variable id="_3" name="_ZTIN9unittests10test_suiteE" type="_7c" context="_1" location="f0:35" file="f0" line="35" extern="1" artificial="1"/>
+  <Namespace id="_4" name="unittests" context="_1" members="_9 _10 _11 _12 " mangled="_Z9unittests" demangled="unittests"/>
+  <Variable id="_5" name="_ZTIN9unittests9test_caseE" type="_13c" context="_1" location="f0:19" file="f0" line="19" extern="1" artificial="1"/>
+  <Namespace id="_6" name="__cxxabiv1" context="_1" members="" mangled="_Z10__cxxabiv1" demangled="__cxxabiv1"/>
+  <Struct id="_7" name="__si_class_type_info_pseudo" context="_1" mangled="27__si_class_type_info_pseudo" demangled="__si_class_type_info_pseudo" location="f1:0" file="f1" line="0" size="96" align="32" members=""/>
+  <CvQualifiedType id="_7c" type="_7" const="1"/>
+  <Struct id="_9" name="test_suite" context="_4" mangled="N9unittests10test_suiteE" demangled="unittests::test_suite" location="f0:35" file="f0" line="35" artificial="1" size="128" align="32" members="_15 _16 _17 _18 _19 _20 _21 _22 " bases="_12 ">
+    <Base type="_12" access="public" virtual="0" offset="0"/>
+  </Struct>
+  <Struct id="_10" name="test_container" context="_4" incomplete="1" mangled="N9unittests14test_containerE" demangled="unittests::test_container" location="f0:33" file="f0" line="33" artificial="1" align="8"/>
+  <Struct id="_11" name="test_results" context="_4" mangled="N9unittests12test_resultsE" demangled="unittests::test_results" location="f0:12" file="f0" line="12" artificial="1" size="8" align="8" members="_23 _24 _25 _26 _27 _28 " bases=""/>
+  <Struct id="_12" name="test_case" context="_4" abstract="1" mangled="N9unittests9test_caseE" demangled="unittests::test_case" location="f0:19" file="f0" line="19" artificial="1" size="64" align="32" members="_29 _30 _31 _32 _33 _34 _35 _36 " bases=""/>
+  <Struct id="_13" name="__class_type_info_pseudo" context="_1" mangled="24__class_type_info_pseudo" demangled="__class_type_info_pseudo" location="f1:0" file="f1" line="0" size="64" align="32" members=""/>
+  <CvQualifiedType id="_13c" type="_13" const="1"/>
+  <Field id="_15" name="m_tests" type="_37" offset="64" context="_9" access="private" location="f0:45" file="f0" line="45"/>
+  <Field id="_16" name="m_results" type="_11" offset="96" context="_9" access="private" location="f0:46" file="f0" line="46"/>
+  <Destructor id="_17" name="test_suite" artificial="1" throw="" context="_9" access="public" mangled="_ZN9unittests10test_suiteD1Ev *INTERNAL* " demangled="unittests::test_suite::~test_suite()" location="f0:35" file="f0" line="35" endline="35" inline="1">
+  </Destructor>
+  <OperatorMethod id="_18" name="=" returns="_38" artificial="1" throw="" context="_9" access="public" mangled="_ZN9unittests10test_suiteaSERKS0_" demangled="unittests::test_suite::operator=(unittests::test_suite const&amp;)" location="f0:35" file="f0" line="35" endline="35" inline="1">
+    <Argument type="_39" location="f0:35" file="f0" line="35"/>
+  </OperatorMethod>
+  <Constructor id="_19" name="test_suite" artificial="1" throw="" context="_9" access="public" mangled="_ZN9unittests10test_suiteC1ERKS0_ *INTERNAL* " demangled="unittests::test_suite::test_suite(unittests::test_suite const&amp;)" location="f0:35" file="f0" line="35" endline="35" inline="1">
+    <Argument type="_39" location="f0:35" file="f0" line="35"/>
+  </Constructor>
+  <Constructor id="_20" name="test_suite" explicit="1" context="_9" access="public" mangled="_ZN9unittests10test_suiteC1EPKcRKNS_14test_containerE *INTERNAL* " demangled="unittests::test_suite::test_suite(char const*, unittests::test_container const&amp;)" location="f0:37" file="f0" line="37" extern="1">
+    <Argument name="name" type="_40" location="f0:37" file="f0" line="37"/>
+    <Argument name="tests" type="_41" location="f0:37" file="f0" line="37"/>
+  </Constructor>
+  <Method id="_21" name="run" returns="_42" virtual="1" overrides="_36 " context="_9" access="public" mangled="_ZN9unittests10test_suite3runEv" demangled="unittests::test_suite::run()" location="f0:39" file="f0" line="39" extern="1"/>
+  <Method id="_22" name="get_results" returns="_43" const="1" context="_9" access="public" mangled="_ZNK9unittests10test_suite11get_resultsEv" demangled="unittests::test_suite::get_results() const" location="f0:41" file="f0" line="41" endline="42" inline="1"/>
+  <Enumeration id="_23" name="status" context="_11" access="public" location="f0:14" file="f0" line="14" artificial="1" size="32" align="32">
+    <EnumValue name="ok" init="0"/>
+    <EnumValue name="fail" init="1"/>
+    <EnumValue name="error" init="2"/>
+  </Enumeration>
+  <Destructor id="_24" name="test_results" artificial="1" throw="" context="_11" access="public" mangled="_ZN9unittests12test_resultsD1Ev *INTERNAL* " demangled="unittests::test_results::~test_results()" location="f0:12" file="f0" line="12" endline="12" inline="1">
+  </Destructor>
+  <OperatorMethod id="_25" name="=" returns="_44" artificial="1" throw="" context="_11" access="public" mangled="_ZN9unittests12test_resultsaSERKS0_" demangled="unittests::test_results::operator=(unittests::test_results const&amp;)" location="f0:12" file="f0" line="12" endline="12" inline="1">
+    <Argument type="_43" location="f0:12" file="f0" line="12"/>
+  </OperatorMethod>
+  <Constructor id="_26" name="test_results" artificial="1" throw="" context="_11" access="public" mangled="_ZN9unittests12test_resultsC1ERKS0_ *INTERNAL* " demangled="unittests::test_results::test_results(unittests::test_results const&amp;)" location="f0:12" file="f0" line="12" inline="1">
+    <Argument type="_43" location="f0:12" file="f0" line="12"/>
+  </Constructor>
+  <Constructor id="_27" name="test_results" artificial="1" throw="" context="_11" access="public" mangled="_ZN9unittests12test_resultsC1Ev *INTERNAL* " demangled="unittests::test_results::test_results()" location="f0:12" file="f0" line="12" inline="1"/>
+  <Method id="_28" name="update" returns="_42" context="_11" access="public" mangled="_ZN9unittests12test_results6updateEPKcNS0_6statusE" demangled="unittests::test_results::update(char const*, unittests::test_results::status)" location="f0:16" file="f0" line="16" extern="1">
+    <Argument name="test_name" type="_40" location="f0:16" file="f0" line="16"/>
+    <Argument name="result" type="_23" location="f0:16" file="f0" line="16"/>
+  </Method>
+  <Field id="_29" name="m_name" type="_40" offset="32" context="_12" access="private" location="f0:30" file="f0" line="30"/>
+  <Destructor id="_30" name="test_case" artificial="1" throw="" context="_12" access="public" mangled="_ZN9unittests9test_caseD1Ev *INTERNAL* " demangled="unittests::test_case::~test_case()" location="f0:19" file="f0" line="19" endline="19" inline="1">
+  </Destructor>
+  <OperatorMethod id="_31" name="=" returns="_45" artificial="1" throw="" context="_12" access="public" mangled="_ZN9unittests9test_caseaSERKS0_" demangled="unittests::test_case::operator=(unittests::test_case const&amp;)" location="f0:19" file="f0" line="19" endline="19" inline="1">
+    <Argument type="_46" location="f0:19" file="f0" line="19"/>
+  </OperatorMethod>
+  <Constructor id="_32" name="test_case" artificial="1" throw="" context="_12" access="public" mangled="_ZN9unittests9test_caseC1ERKS0_ *INTERNAL* " demangled="unittests::test_case::test_case(unittests::test_case const&amp;)" location="f0:19" file="f0" line="19" endline="19" inline="1">
+    <Argument type="_46" location="f0:19" file="f0" line="19"/>
+  </Constructor>
+  <Constructor id="_33" name="test_case" context="_12" access="public" mangled="_ZN9unittests9test_caseC1EPKc *INTERNAL* " demangled="unittests::test_case::test_case(char const*)" location="f0:21" file="f0" line="21" extern="1">
+    <Argument name="test_case_name" type="_40" location="f0:21" file="f0" line="21"/>
+  </Constructor>
+  <Method id="_34" name="set_up" returns="_42" virtual="1" overrides="" context="_12" access="public" mangled="_ZN9unittests9test_case6set_upEv" demangled="unittests::test_case::set_up()" location="f0:23" file="f0" line="23" inline="1"/>
+  <Method id="_35" name="tear_down" returns="_42" virtual="1" overrides="" context="_12" access="public" mangled="_ZN9unittests9test_case9tear_downEv" demangled="unittests::test_case::tear_down()" location="f0:25" file="f0" line="25" inline="1"/>
+  <Method id="_36" name="run" returns="_42" virtual="1" pure_virtual="1" overrides="" context="_12" access="public" mangled="_ZN9unittests9test_case3runEv" demangled="unittests::test_case::run()" location="f0:27" file="f0" line="27" extern="1"/>
+  <PointerType id="_37" type="_10" size="32" align="32"/>
+  <ReferenceType id="_38" type="_9" size="32" align="32"/>
+  <ReferenceType id="_39" type="_9c" size="32" align="32"/>
+  <PointerType id="_40" type="_48c" size="32" align="32"/>
+  <ReferenceType id="_41" type="_10c" size="32" align="32"/>
+  <FundamentalType id="_42" name="void" align="8"/>
+  <ReferenceType id="_43" type="_11c" size="32" align="32"/>
+  <ReferenceType id="_44" type="_11" size="32" align="32"/>
+  <ReferenceType id="_45" type="_12" size="32" align="32"/>
+  <ReferenceType id="_46" type="_12c" size="32" align="32"/>
+  <FundamentalType id="_48" name="char" size="8" align="8"/>
+  <CvQualifiedType id="_48c" type="_48" const="1"/>
+  <CvQualifiedType id="_11c" type="_11" const="1"/>
+  <CvQualifiedType id="_12c" type="_12" const="1"/>
+  <CvQualifiedType id="_10c" type="_10" const="1"/>
+  <CvQualifiedType id="_9c" type="_9" const="1"/>
+  <File id="f0" name="example.hpp"/>
+  <File id="f1" name="&lt;built-in&gt;"/>
+</GCC_XML>
