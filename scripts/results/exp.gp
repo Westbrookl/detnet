@@ -29,7 +29,7 @@
 #Happy gnuplotting
 
 
-set out "perflow_2_sharing.pdf"
+set out "perflow_10_sharing.pdf"
 set term pdf font "Times,12"
 set pointsize 1.25
 
@@ -56,13 +56,20 @@ set ylabel "Bitrate Mbps"
 #print("Total Throughput")
 #print(total)
 #f(x)=total
-set yrange [0:30]
+set yrange [0:6000]
 
 plot \
-'< cat exp.dat'    u ($0+1)*10:($1/1000)      t 'Input Rate Flow-Detnet'  axes x1y1 with lp pt 4 lc rgb "blue",\
-'< cat exp.dat'    u ($0+1)*10:($2/1000)      t 'Output Rate Flow-Detnet'  axes x1y1 with lp pt 7 lc rgb "blue",\
-'< cat exp.dat'    u ($0+1)*10:($3/1000)      t 'Input Rate Flow-Other'  axes x1y1 with lp pt 8 lc rgb "red",\
-'< cat exp.dat'    u ($0+1)*10:($4/1000)      t 'Output Rate Flow-Other'  axes x1y1 with lp pt 11 lc rgb "red"
+'< cat exp_10flows_rx.dat'    u ($0+1)*10:($2)      t 'Rx Detnet-1'  axes x1y1 with lines ,\
+'< cat exp_10flows_rx.dat'    u ($0+1)*10:($5)      t 'Rx Detnet-2'  axes x1y1 with lines ,\
+'< cat exp_10flows_rx.dat'    u ($0+1)*10:($8)      t 'Rx Detnet-3'  axes x1y1 with lines ,\
+'< cat exp_10flows_rx.dat'    u ($0+1)*10:($11)      t 'Rx Detnet-4'  axes x1y1 with lines,\
+'< cat exp_10flows_rx.dat'    u ($0+1)*10:($32)      t 'Rx Other-1'  axes x1y1 with lines
+
+#plot \
+#'< cat exp_10flows_rx.dat'    u ($0+1)*10:($2)      t 'Rx Detnet-1'  axes x1y1 with #lp pt 4 lc rgb "blue",\
+#'< cat exp_10flows_rx.dat'    u ($0+1)*10:($5)      t 'Rx Detnet-2'  axes x1y1 with line  #lp pt 7 lc rgb "blue",\
+#'< cat exp_10flows_rx.dat'    u ($0+1)*10:($8)      t 'Rx Detnet-3'  axes x1y1 with lp pt 8 lc rgb "red",\
+#'< cat exp_10flows_rx.dat'    u ($0+1)*10:($11)      t 'Rx Detnet-4'  axes x1y1 with lp pt 11 lc rgb "red"
 #'< sort -rnk1 /home/vk/FAIRDROP_BW_MASTER/NETWORKING_FAIRDROP_BW_1.0/plots/flow_pps.dat'	u ($0+1):($1/1000000)   	t 'Networking Alpha-1.0'  axes x1y1 with lp pt 4 lc rgb "black",	\
 #'< sort -rnk1 /home/vk/FAIRDROP_BW_MASTER/ACT_FAIRDROP_BW_1.0/plots/flow_pps.dat'    u ($0+1):($1/1000000)      t 'Act Alpha-1.0'  axes x1y1 with lp pt 4 lc rgb "blue",    \
 #'< sort -rnk1 /home/vk/FAIRDROP_BW_MASTER/NETWORKING_FAIRDROP_BW_0.4/plots/flow_pps.dat'    u ($0+1):($1/1000000)       t 'Networking Alpha-0.4'  axes x1y1 with lp pt 6 lc rgb "black", \

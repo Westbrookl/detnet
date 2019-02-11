@@ -16,6 +16,17 @@
 #include "bw_resv.h"
 #include "queue-disc.h"
 
+
+//#include "ns3/packet.h"
+#include "ns3/queue-item.h"
+#include "ns3/ipv4-header.h"
+#include "ns3/ethernet-header.h"
+#include "ns3/udp-header.h"
+#include "ns3/ipv4-queue-disc-item.h"
+
+//#include "ns3/ipv4-queue-disc-item.h"
+
+
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("BwResvQueueDisc");
@@ -157,97 +168,156 @@ BwResvQueueDisc::GetTokensOther (void) const
   return m_other_tokens;
 }
 
+void
+BwResvQueueDisc::AddDetnetActiveFlow(detnetactiveflow_t tail){
+	detnetactiveflows.push_back(tail);
+}
+
+BwResvQueueDisc::detnetactiveflow_t
+BwResvQueueDisc::RemoveDetnetActiveFlow(void){
+	detnetactiveflow_t head = detnetactiveflows.front();
+	detnetactiveflows.erase(detnetactiveflows.begin());
+	return head;
+}
+
+void
+BwResvQueueDisc::AddOtherActiveFlow(otheractiveflow_t tail){
+	otheractiveflows.push_back(tail);
+}
+
+BwResvQueueDisc::otheractiveflow_t
+BwResvQueueDisc::RemoveOtherActiveFlow(void){
+	otheractiveflow_t head = otheractiveflows.front();
+	otheractiveflows.erase(otheractiveflows.begin());
+	return head;
+}
+
+BwResvQueueDisc::flow_table_t*
+BwResvQueueDisc::ClassifyFlow(Ptr<QueueDiscItem> item,uint32_t hash,uint32_t pktsize){
+	flow_table_t *flow;
+	//uint32_t size = pktsize/8; // size in bytes. pktsize is previously converted to bits.
+	uint32_t mod = hash%TABLESIZE;
+	uint32_t a=flow_table[mod].size();
+	while(a){
+		flow=&flow_table[mod][a-1];
+		//std::cout << a << "\t"<< flow->vqueue << "\t"<< flow->bwreq<< "\t"<<flow->type<< "\t"<<flow->hash<<  std::endl;
+		if(flow->hash == hash)return flow ;
+		a--;
+	}
+	flow= new flow_table_t[1];
+	flow->hash=hash;
+	flow->vqueue=0;
+	Ptr<Packet> pkt = item->GetPacket();
+	Ptr<Packet> c = pkt->Copy();
+	UdpHeader udp;
+	c->RemoveHeader(udp);
+	uint8_t *buffer = new uint8_t[c->GetSize ()];
+	c->CopyData(buffer, c->GetSize ());
+	//std::string s = std::string(buffer);
+	//std::string s = std::string(buffer, buffer+c->GetSize()-3);
+	std::string s = std::string(buffer, buffer+8);
+	DataRate req;
+	if(s[7]=='s')
+		req=s;
+	else
+		req=DataRate("100Kbps");
+	uint64_t flow_bwreq = req.GetBitRate();
+	std::string type = std::string(buffer+9, buffer+10);
+	//std::cout << buffer<< "\t"<<s<<item->GetSize()<<"\t"<<type<<  std::endl;
+	//std::string type = std::string(buffer+c->GetSize()-2, buffer+c->GetSize()-1);
+	flow->bwreq=flow_bwreq;
+	flow->type=type;
+	flow_table[mod].push_back(*flow);
+	return flow;
+}
+
 bool
 BwResvQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
 
-  //int32_t ret = 1; /*Classify (item);*/
-  int32_t band = 0;
   Time now = Simulator::Now ();
   double delta = (now  - m_timeCheckPoint).GetSeconds ();
   m_timeCheckPoint=now;
+  uint32_t hash = item->Hash ();
+  flow_table_t *flow;
+  uint32_t pktsize = (item->GetSize ())*8;
 
-  uint32_t h = item->Hash ();
-  //printf("%u\n",h);
+  flow = ClassifyFlow(item,hash,pktsize);
 
-/*  if (ret == PacketFilter::PF_NO_MATCH)
-    {
-      NS_LOG_DEBUG ("No filter has been able to classify this packet, using bwresv.");
-      band = 1;
-    }
-  else
-	  band = ret;*/
-  if(h==608124638)band=1;
-  else
-	  band=0;
+////////////Priority bandwidth reservation with multiple detnet flows//////////////
 
-//  //Strict reservation
-//  if(band==0){
-//	  double delta = (now  - m_timeCheckPoint_detnet).GetSeconds ();
-//	  m_timeCheckPoint_detnet=now;
-//  uint32_t credit = (m_ratedetnet.GetBitRate ()*delta);
-//  if(m_detnet_tokens > credit)m_detnet_tokens -= (m_ratedetnet.GetBitRate ()*delta);
-//  else m_detnet_tokens=0;
-//  }
-//  else if(band==1){
-//	  double delta = (now  - m_timeCheckPoint_other).GetSeconds ();
-//	    m_timeCheckPoint_other=now;
-//  uint32_t credit=(m_rateother.GetBitRate ()*delta);
-//  if(m_other_tokens > credit)m_other_tokens -= (m_rateother.GetBitRate ()*delta);
-//  else m_other_tokens=0;
-//  }
-//  ////////////////////
-//
   //Overall bandwidth usage priority
   uint32_t credit = (m_ratedetnet.GetBitRate ()*delta);
-  uint32_t old_nbl=nbl+1;
-  while(old_nbl>nbl && nbl>0){
-	  old_nbl=nbl;
-	  if(m_detnet_tokens>credit){
-		  m_detnet_tokens -= credit;
-		  credit=0;
-	  }
-	  else{
-		  if(!m_detnet_tokens){
-			  credit-=m_detnet_tokens;
-			  m_detnet_tokens=0;
-			  nbl--;
-		  }
-		  if (m_other_tokens>credit){
-			  m_other_tokens -=credit;
-			  credit=0;
+  uint32_t detnet_consumption=0;
+  //std::cout<< detnetactiveflows.size() << std::endl;
+
+  if(detnetactiveflows.size() > 0){
+	  for(uint32_t i=0;i<detnetactiveflows.size();i++){
+		  detnetactiveflow_t d_flow = RemoveDetnetActiveFlow();
+		  flow_table_t *flow = d_flow.flow;
+		  uint32_t req  = (flow->bwreq*delta);
+		  //std::cout << req << delta<< "\t"<< flow->vqueue <<  std::endl;
+		  if(flow->vqueue > req){
+			  flow->vqueue-=req;
+			  detnet_consumption+=req;
+			  AddDetnetActiveFlow(d_flow);
 		  }
 		  else{
-			  credit -=m_other_tokens;
-			  m_other_tokens=0;
-			  nbl--;
-
+			  detnet_consumption+=flow->vqueue;
+			  flow->vqueue=0;
 		  }
 	  }
   }
+  if(credit > detnet_consumption && otheractiveflows.size() > 0){
+	  flow_table_t *flow;
+	  otheractiveflow_t o_flow;
+	  uint32_t rem_credit=credit-detnet_consumption;
+	  uint32_t served;
+	  uint32_t old_nbl=otheractiveflows.size()+1;
+	  while(old_nbl>otheractiveflows.size() && otheractiveflows.size()>0){
+		  old_nbl=otheractiveflows.size();
+		  served = rem_credit/old_nbl;
+		  rem_credit=0;
+		  for (uint32_t i=0;i<old_nbl;i++){
+			  o_flow = RemoveOtherActiveFlow();
+			  flow=o_flow.flow;
+			  if(flow->vqueue > served){
+				  flow->vqueue -= served;
+				  AddOtherActiveFlow(o_flow);
+			  }
+			  else{
+				  rem_credit+=served-flow->vqueue;
+				  flow->vqueue=0;
+			  }
+		  }
 
-  uint32_t pktsize = (item->GetSize ())*8;
- /* if(h==1824837955 || h==3351919300){ //870704681
-	  DropBeforeEnqueue (item, FORCED_DROP);
-	  return false;
-  }*/ // Test for hash values
+	  }
+  }
 
-  if(band==0 && (m_detnet_tokens+pktsize <= threshold)){
-	  if(!m_detnet_tokens)nbl++;
-	  m_detnet_tokens += pktsize;
-	  //printf("%u\n",nbl);
+// Packet Accepted or Dropped
+
+  if(flow->vqueue+pktsize <=threshold){
+	  if(flow->vqueue == 0){
+		  if(flow->type=="D"){
+			  nbl_detnet++;
+			  detnetactiveflow_t newflow;
+			  newflow.flow=flow;
+			  AddDetnetActiveFlow(newflow);
+		  }
+		  else{
+			  nbl_other++;
+			  otheractiveflow_t newflow;
+			  newflow.flow=flow;
+			  AddOtherActiveFlow(newflow);
+
+		  }
+	  }
+	  flow->vqueue+=pktsize;
+	  //std::cout << flow.vqueue <<  std::endl;
+
   }
-  else if (band==0 && (m_detnet_tokens+pktsize > threshold)){
-	  DropBeforeEnqueue (item, FORCED_DROP);
-	  return false;
-  }
-  else if (band==1 && (m_other_tokens +pktsize <= threshold)){
-	  if(!m_other_tokens)nbl++;
-	  m_other_tokens += pktsize;
-	  //printf("%u\n",nbl);
-  }
-  else if(band==1 && (m_other_tokens +pktsize > threshold)){
+  else{
 	  DropBeforeEnqueue (item, FORCED_DROP);
 	  return false;
   }
@@ -436,8 +506,9 @@ BwResvQueueDisc::InitializeParams (void)
   m_timeCheckPoint_other = Seconds (0);
   m_timeCheckPoint = Seconds (0);
   m_id = EventId ();
-  threshold=1500*50;
-  nbl=0;
+  threshold=1500*5;
+  nbl_detnet=0;
+  nbl_other=0;
 }
 
 } // namespace ns3

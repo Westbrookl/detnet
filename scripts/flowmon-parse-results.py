@@ -103,6 +103,8 @@ class Flow(object):
         txPackets = long(flow_el.get('txPackets'))
         tx_duration = 10 - long(flow_el.get('timeFirstTxPacket')[:-4])*1e-9 #float(long(flow_el.get('timeLastTxPacket')[:-4]) - long(flow_el.get('timeFirstTxPacket')[:-4]))*1e-9
         rx_duration = 10 - long(flow_el.get('timeFirstRxPacket')[:-4])*1e-9 #float(long(flow_el.get('timeLastRxPacket')[:-4]) - long(flow_el.get('timeFirstRxPacket')[:-4]))*1e-9
+	#tx_duration = float(long(flow_el.get('timeLastTxPacket')[:-4]) - long(flow_el.get('timeFirstTxPacket')[:-4]))*1e-9
+	#rx_duration = float(long(flow_el.get('timeLastRxPacket')[:-4]) - long(flow_el.get('timeFirstRxPacket')[:-4]))*1e-9
         self.rx_duration = rx_duration
         self.probe_stats_unsorted = []
         if rxPackets:

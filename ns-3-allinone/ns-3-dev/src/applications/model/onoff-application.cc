@@ -39,7 +39,7 @@
 #include "ns3/trace-source-accessor.h"
 #include "onoff-application.h"
 #include "ns3/udp-socket-factory.h"
-#include "ns3/string.h"
+//#include "ns3/string.h"
 #include "ns3/pointer.h"
 
 namespace ns3 {
@@ -94,6 +94,10 @@ OnOffApplication::GetTypeId (void)
     .AddTraceSource ("TxWithAddresses", "A new packet is created and is sent",
                      MakeTraceSourceAccessor (&OnOffApplication::m_txTraceWithAddresses),
                      "ns3::Packet::TwoAddressTracedCallback")
+	.AddAttribute ("Buffer", "The actual data contained in the packet",
+			StringValue("1000Kbps D"),
+						MakeStringAccessor (&OnOffApplication::buffer_data),
+						MakeStringChecker())
   ;
   return tid;
 }
@@ -282,7 +286,9 @@ void OnOffApplication::SendPacket ()
   NS_LOG_FUNCTION (this);
 
   NS_ASSERT (m_sendEvent.IsExpired ());
-  Ptr<Packet> packet = Create<Packet> (m_pktSize);
+  std::vector<uint8_t> buf(buffer_data.begin(), buffer_data.end());
+  uint8_t *payload = &buf[0];
+  Ptr<Packet> packet = Create<Packet> (payload,m_pktSize);
   m_txTrace (packet);
   m_socket->Send (packet);
   m_totBytes += m_pktSize;

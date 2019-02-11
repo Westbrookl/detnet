@@ -17,6 +17,8 @@
 #include "ns3/traced-value.h"
 #include "ns3/trace-source-accessor.h"
 #include "ns3/event-id.h"
+//#include "vector.h"
+#include <iostream>
 
 namespace ns3 {
 
@@ -28,6 +30,21 @@ namespace ns3 {
 class BwResvQueueDisc : public QueueDisc
 {
 public:
+
+	typedef struct flow_table{
+		uint32_t vqueue;
+		uint32_t hash;
+		std::string type;
+		uint64_t bwreq;
+	}flow_table_t;
+
+	typedef struct detnetactiveflow{
+		flow_table_t *flow;
+	}detnetactiveflow_t;
+
+	typedef struct otheractiveflow{
+			flow_table_t *flow;
+		}otheractiveflow_t;
 
   /**
    * \brief Get the type ID.
@@ -119,6 +136,12 @@ public:
     */
   uint32_t GetTokensOther (void) const;
 
+  void AddDetnetActiveFlow(detnetactiveflow_t flow);
+  detnetactiveflow_t RemoveDetnetActiveFlow(void);
+  void AddOtherActiveFlow(otheractiveflow_t flow);
+  otheractiveflow_t RemoveOtherActiveFlow(void);
+  flow_table_t *ClassifyFlow(Ptr<QueueDiscItem> item,uint32_t hash,uint32_t pktsize);
+
 
   // Reasons for dropping packets
   static constexpr const char* UNFORCED_DROP = "Unforced drop";  //!< Early probability drops
@@ -131,6 +154,8 @@ public:
   uint32_t threshold;
   uint32_t detnet_active;
   uint32_t other_active;
+
+
 
 protected:
   /**
@@ -157,11 +182,15 @@ private:
   Time m_timeCheckPoint_detnet;           //!< Time check-point
   Time m_timeCheckPoint_other;           //!< Time check-point
   Time m_timeCheckPoint;           //!< Time check-point
-  uint32_t nbl;
+  uint32_t nbl_detnet;
+  uint32_t nbl_other;
   EventId m_id;                    //!< EventId of the scheduled queue waking event when enough tokens are available
-
-
-
+#define TABLESIZE 1024
+#define DETNET 0
+#define OTHER 1
+  std::vector<flow_table_t>flow_table[TABLESIZE];
+  std::vector<detnetactiveflow_t>detnetactiveflows;
+  std::vector<otheractiveflow_t>otheractiveflows;
 };
 
 } // namespace ns3

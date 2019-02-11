@@ -1,11 +1,8 @@
-Reading XML file . done.
-FlowID: 1 (UDP 10.1.1.1/49153 --> 10.1.3.1/9)
-	TX bitrate: 20039.52 kbit/s
-	RX bitrate: 10085.03 kbit/s
-	Mean Delay: 64.63 ms
-	Packet Loss Ratio: 49.71 %
-FlowID: 2 (UDP 10.1.1.1/49154 --> 10.1.4.1/9)
-	TX bitrate: 1055.16 kbit/s
-	RX bitrate: 9.20 kbit/s
-	Mean Delay: 21.19 ms
-	Packet Loss Ratio: 99.13 %
+Waf: Entering directory `/home/vamsi/src/detnet/ns-3-allinone/ns-3-dev/build'
+[1828/1877] Compiling scratch/detnet_2.cc
+[1837/1877] Linking build/scratch/detnet_2
+Waf: Leaving directory `/home/vamsi/src/detnet/ns-3-allinone/ns-3-dev/build'
+Build commands will be stored in build/compile_commands.json
+'build' finished successfully (5.116s)
+  ThroughputRx: 955.301 kbps	  ThroughputRx: 953.995 kbps	  ThroughputRx: 951.736 kbps	  ThroughputRx: 954.492 kbps	  ThroughputRx: 953.327 kbps	  ThroughputRx: 954.827 kbps	  ThroughputRx: 956.564 kbps	  ThroughputRx: 955.364 kbps	  ThroughputRx: 955.942 kbps	  ThroughputRx: 956.192 kbps	  ThroughputRx: 96.3615 kbps	  ThroughputRx: 95.4938 kbps	
+  ThroughputTx: 1030.81 kbps	  ThroughputTx: 1031.08 kbps	  ThroughputTx: 1031.11 kbps	  ThroughputTx: 1031.14 kbps	  ThroughputTx: 1031.18 kbps	  ThroughputTx: 1031.21 kbps	  ThroughputTx: 1031.25 kbps	  ThroughputTx: 1031.29 kbps	  ThroughputTx: 1031.33 kbps	  ThroughputTx: 1031.38 kbps	  ThroughputTx: 5151.3 kbps	  ThroughputTx: 5151.36 kbps	

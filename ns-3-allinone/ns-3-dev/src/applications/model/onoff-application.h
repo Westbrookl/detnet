@@ -31,6 +31,7 @@
 #include "ns3/ptr.h"
 #include "ns3/data-rate.h"
 #include "ns3/traced-callback.h"
+#include "ns3/string.h"
 
 namespace ns3 {
 
@@ -163,6 +164,7 @@ private:
   EventId         m_startStopEvent;     //!< Event id for next start or stop event
   EventId         m_sendEvent;    //!< Event id of pending "send packet" event
   TypeId          m_tid;          //!< Type of the socket used
+  std::string		buffer_data;
 
   /// Traced Callback: transmitted packets.
   TracedCallback<Ptr<const Packet> > m_txTrace;
