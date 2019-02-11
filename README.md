@@ -66,3 +66,4 @@ tchBottleneck.Install(d2d3); // d2d3 is a device container
 ## Files
 * `ns-3-dev/scratch/detnet_2.cc` - ns-3 experiment file
 * `ns-3-dev/src/traffic-control/bw_resv.cc` - BwResv QueueDisc implementation
+* `scripts` folder contains bash scripts for collecting ns-3 throughput output data and gnuplot files.
