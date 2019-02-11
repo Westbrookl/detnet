@@ -63,3 +63,6 @@ TrafficControlHelper tchBottleneck;
 tchBottleneck.SetRootQueueDisc ("ns3::BwResvQueueDisc","RateOther",DataRateValue(DataRate("1000kbps")),"RateDetnet",DataRateValue(DataRate("10000kbps")));
 tchBottleneck.Install(d2d3); // d2d3 is a device container
 ```
+## Files
+* `ns-3-dev/scratch/detnet_2.cc` - ns-3 experiment file
+* `ns-3-dev/src/traffic-control/bw_resv.cc` - BwResv QueueDisc implementation
