@@ -61,6 +61,7 @@ void F(){
 		    }
 		   }
 	std::cout << std::endl;
+	//flowmon->ClearFlowStats(); // @suppress("Invalid arguments")
 }
 int
 main (int argc, char *argv[])
@@ -69,8 +70,12 @@ main (int argc, char *argv[])
 	//LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_ALL);
 	//LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_ALL);
 
-	Config::SetDefault ("ns3::OnOffApplication::PacketSize", UintegerValue (1500));
-	Config::SetDefault ("ns3::OnOffApplication::DataRate", StringValue ("448kb/s"));
+	//Config::SetDefault ("ns3::OnOffApplication::PacketSize", UintegerValue (1500));
+	//Config::SetDefault ("ns3::OnOffApplication::DataRate", StringValue ("448kb/s"));
+
+	//Config::SetDefault("ns3::TcpL4Protocol::SocketType",StringValue("ns3:TcpNewReno"));
+	//Config::SetDefault ("ns3::TcpL4Protocol::SocketType", TypeIdValue (TypeId::LookupByName ("TcpHighSpeed")));
+	Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (1472));
 	Config::SetDefault ("ns3::Ipv4GlobalRouting::RespondToInterfaceEvents", BooleanValue (true));
 
 	std::string bandwidth = "10Mbps";
@@ -139,7 +144,7 @@ main (int argc, char *argv[])
 
 	//type-1
 	PointToPointHelper type1;
-	type1.SetDeviceAttribute("DataRate",StringValue("10Mbps"));
+	type1.SetDeviceAttribute("DataRate",StringValue("12Mbps"));
 	type1.SetChannelAttribute("Delay",StringValue("2ms"));
 
 	//type-2
@@ -155,7 +160,7 @@ main (int argc, char *argv[])
 		tchBottleneck.SetQueueLimits ("ns3::DynamicQueueLimits");
 	}
 */
-	tchBottleneck.SetRootQueueDisc ("ns3::BwResvQueueDisc","RateOther",DataRateValue(DataRate("1000kbps")),"RateDetnet",DataRateValue(DataRate("10000kbps")));
+	tchBottleneck.SetRootQueueDisc ("ns3::BwResvQueueDisc","RateOther",DataRateValue(DataRate("1000kbps")),"RateDetnet",DataRateValue(DataRate("12000kbps")));
 	// Net Devices
 	NetDeviceContainer d0d2 = type0.Install(n0n2);
 	NetDeviceContainer d1d2 = type0.Install(n1n2);
@@ -225,7 +230,7 @@ main (int argc, char *argv[])
 	   onoff.SetAttribute ("Remote",AddressValue (InetSocketAddress (i5i3.GetAddress (0), port)));
 	   onoff.SetConstantRate (DataRate ("1000Kbps")); //app1
 	   onoff.SetAttribute("Buffer",StringValue("1000Kbps D")); //12 bytes reserved
-	   ApplicationContainer apps1 = onoff.Install (c.Get (0));
+	   apps = onoff.Install (c.Get (0));
 	   apps.Start (Seconds (1.2));
 	   apps.Stop (Seconds (10.0));
 
@@ -291,7 +296,7 @@ main (int argc, char *argv[])
 	   onoff1.SetAttribute("Buffer",StringValue("1000Kbps O")); //12 bytes reserved
 	   apps = onoff1.Install (c.Get (0));
 	   apps.Start (Seconds (2.1));
-	   apps.Stop (Seconds (10.0));
+	   apps.Stop (Seconds (4.0));
 
 	   onoff1.SetAttribute ("Remote",AddressValue (InetSocketAddress (i4i3.GetAddress (0), port)));
 	   onoff1.SetConstantRate (DataRate ("5000Kbps")); //appOther
@@ -356,7 +361,8 @@ main (int argc, char *argv[])
 	   //Ptr<FlowMonitor> flowmon;
 
 	   flowmon = flowHelper.InstallAll();
-	   //flowmon->Start(Seconds(3));
+	   //flowmon->Start(Seconds(4));
+	   //Simulator::Schedule(Seconds (4),&F);
 	   Simulator::Schedule(Seconds (5),&F);
 
 //	   for (uint8_t i=2;i<11;i++){
@@ -364,7 +370,7 @@ main (int argc, char *argv[])
 //	   }
 
 
-  Simulator::Stop (Seconds (6));
+  Simulator::Stop (Seconds (7));
   Simulator::Run ();
   //flowmon->SerializeToXmlFile(queueDiscType + "-flowMonitor.xml", true, true);
 //  for (uint8_t i=0;i<11;i++){

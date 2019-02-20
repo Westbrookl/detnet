@@ -36,6 +36,8 @@ public:
 		uint32_t hash;
 		std::string type;
 		uint64_t bwreq;
+		Time last_arrival;
+		uint32_t threshold_flow;
 	}flow_table_t;
 
 	typedef struct detnetactiveflow{

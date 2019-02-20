@@ -227,6 +227,8 @@ BwResvQueueDisc::ClassifyFlow(Ptr<QueueDiscItem> item,uint32_t hash,uint32_t pkt
 	//std::string type = std::string(buffer+c->GetSize()-2, buffer+c->GetSize()-1);
 	flow->bwreq=flow_bwreq;
 	flow->type=type;
+	flow->threshold_flow=1500*8;
+	//flow->last_arrival=Simulator::Now ();
 	flow_table[mod].push_back(*flow);
 	return flow;
 }
@@ -237,6 +239,8 @@ BwResvQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   NS_LOG_FUNCTION (this << item);
 
   Time now = Simulator::Now ();
+  //bool retval = GetQueueDiscClass (0)->GetQueueDisc ()->Enqueue (item);
+  //return retval;
   double delta = (now  - m_timeCheckPoint).GetSeconds ();
   m_timeCheckPoint=now;
   uint32_t hash = item->Hash ();
@@ -250,13 +254,15 @@ BwResvQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   //Overall bandwidth usage priority
   uint32_t credit = (m_ratedetnet.GetBitRate ()*delta);
   uint32_t detnet_consumption=0;
-  //std::cout<< detnetactiveflows.size() << std::endl;
+  //std::cout<< detnetactiveflows.size() << "\t"<< otheractiveflows.size()<< std::endl;
 
   if(detnetactiveflows.size() > 0){
 	  for(uint32_t i=0;i<detnetactiveflows.size();i++){
 		  detnetactiveflow_t d_flow = RemoveDetnetActiveFlow();
 		  flow_table_t *flow = d_flow.flow;
-		  uint32_t req  = (flow->bwreq*delta);
+		  double delta1 = (now  - flow->last_arrival).GetSeconds ();
+		  flow->last_arrival=now;
+		  uint32_t req  = (flow->bwreq*delta1);
 		  //std::cout << req << delta<< "\t"<< flow->vqueue <<  std::endl;
 		  if(flow->vqueue > req){
 			  flow->vqueue-=req;
@@ -275,6 +281,7 @@ BwResvQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 	  uint32_t rem_credit=credit-detnet_consumption;
 	  uint32_t served;
 	  uint32_t old_nbl=otheractiveflows.size()+1;
+	  //std::cout << otheractiveflows.size()<<std::endl;
 	  while(old_nbl>otheractiveflows.size() && otheractiveflows.size()>0){
 		  old_nbl=otheractiveflows.size();
 		  served = rem_credit/old_nbl;
@@ -296,8 +303,12 @@ BwResvQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   }
 
 // Packet Accepted or Dropped
-
-  if(flow->vqueue+pktsize <=threshold){
+  uint32_t t;
+  if(flow->type=="D")
+	  t=flow->threshold_flow;
+  else
+	  t=threshold;
+  if(flow->vqueue <=t){
 	  if(flow->vqueue == 0){
 		  if(flow->type=="D"){
 			  nbl_detnet++;
@@ -314,11 +325,21 @@ BwResvQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 		  }
 	  }
 	  flow->vqueue+=pktsize;
+	  //flow->last_arrival=now;
 	  //std::cout << flow.vqueue <<  std::endl;
+	  flow->last_arrival=Simulator::Now ();
+//	  if(flow->type=="D")
+//	  flow->threshold_flow=flow->threshold_flow*1.2;
+//	  else
+//		  threshold=threshold*1.2;
 
   }
   else{
 	  DropBeforeEnqueue (item, FORCED_DROP);
+//	  if(flow->type=="D")
+//	  flow->threshold_flow=flow->threshold_flow*0.5;
+//	  else
+//		  threshold=threshold*0.5;
 	  return false;
   }
 
@@ -506,7 +527,7 @@ BwResvQueueDisc::InitializeParams (void)
   m_timeCheckPoint_other = Seconds (0);
   m_timeCheckPoint = Seconds (0);
   m_id = EventId ();
-  threshold=1500*5;
+  threshold=1500*15;
   nbl_detnet=0;
   nbl_other=0;
 }

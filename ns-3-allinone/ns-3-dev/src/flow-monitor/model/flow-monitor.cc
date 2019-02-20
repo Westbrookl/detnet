@@ -286,6 +286,67 @@ FlowMonitor::GetFlowStats () const
   return m_flowStats;
 }
 
+/// starts
+Time     timeFirstTxPacket;
+
+/// Contains the absolute time when the first packet in the flow
+/// was received by an end node, i.e. the time when the flow
+/// reception starts
+Time     timeFirstRxPacket;
+
+/// Contains the absolute time when the last packet in the flow
+/// was transmitted, i.e. the time when the flow transmission
+/// ends
+Time     timeLastTxPacket;
+
+/// Contains the absolute time when the last packet in the flow
+/// was received, i.e. the time when the flow reception ends
+Time     timeLastRxPacket;
+
+/// Contains the sum of all end-to-end delays for all received
+/// packets of the flow.
+Time     delaySum; // delayCount == rxPackets
+
+/// Contains the sum of all end-to-end delay jitter (delay
+/// variation) values for all received packets of the flow.  Here
+/// we define _jitter_ of a packet as the delay variation
+/// relatively to the last packet of the stream,
+/// i.e. \f$Jitter\left\{P_N\right\} = \left|Delay\left\{P_N\right\} - Delay\left\{P_{N-1}\right\}\right|\f$.
+/// This definition is in accordance with the Type-P-One-way-ipdv
+/// as defined in IETF \RFC{3393}.
+Time     jitterSum; // jitterCount == rxPackets - 1
+
+/// Contains the last measured delay of a packet
+/// It is stored to measure the packet's Jitter
+Time     lastDelay;
+
+/// Total number of transmitted bytes for the flow
+uint64_t txBytes;
+/// Total number of received bytes for the flow
+uint64_t rxBytes;
+/// Total number of transmitted packets for the flow
+uint32_t txPackets;
+/// Total number of received packets for the flow
+uint32_t rxPackets;
+
+
+void
+FlowMonitor::ClearFlowStats () {
+	//FlowStatsContainerI iter;
+	uint32_t s = m_flowStats.size();
+	while (s){
+		m_flowStats[s-1].rxBytes=60;
+		m_flowStats[s-1].rxPackets=1;
+		m_flowStats[s-1].txBytes=60;
+		m_flowStats[s-1].txPackets=1;
+		m_flowStats[s-1].timeFirstRxPacket= Simulator::Now();
+		m_flowStats[s-1].timeFirstTxPacket=Simulator::Now();
+		//m_flowStats[s-1].timeLastRxPacket=Simulator::Now();
+		//m_flowStats[s].timeLastTxPacket=Simulator::Now();
+		s--;
+	}
+}
+
 
 void
 FlowMonitor::CheckForLostPackets (Time maxDelay)

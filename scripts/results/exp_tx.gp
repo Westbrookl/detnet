@@ -59,18 +59,18 @@ set ylabel "Bitrate Mbps"
 set yrange [0:6000]
 
 plot \
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($2)      t 'Tx Detnet-1'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($5)      t 'Tx Detnet-2'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($8)      t 'Tx Detnet-3'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($11)      t 'Tx Detnet-4'  axes x1y1 with lp,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($13)      t 'Tx Detnet-5'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($16)      t 'Tx Detnet-6'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($19)      t 'Tx Detnet-7'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($22)      t 'Tx Detnet-8'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($25)      t 'Tx Detnet-9'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($28)      t 'Tx Detnet-10'  axes x1y1 with lp ,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($32)      t 'Tx Other-1'  axes x1y1 with lp,\
-'< cat exp_10flows_tx.dat'    u ($0+1)*10:($35)      t 'Tx Other-2'  axes x1y1 with lp
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($2)      t 'Tx Detnet-1'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($5)      t 'Tx Detnet-2'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($8)      t 'Tx Detnet-3'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($11)      t 'Tx Detnet-4'  axes x1y1 with steps,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($13)      t 'Tx Detnet-5'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($16)      t 'Tx Detnet-6'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($19)      t 'Tx Detnet-7'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($22)      t 'Tx Detnet-8'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($25)      t 'Tx Detnet-9'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($28)      t 'Tx Detnet-10'  axes x1y1 with steps ,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($32)      t 'Tx Other-1'  axes x1y1 with steps,\
+'< cat exp_10flows_tx.dat'    u ($0+1)*10:($35)      t 'Tx Other-2'  axes x1y1 with steps lc rgb "red"
 
 #plot \
 #'< cat exp_10flows_rx.dat'    u ($0+1)*10:($2)      t 'Rx Detnet-1'  axes x1y1 with #lp pt 4 lc rgb "blue",\
